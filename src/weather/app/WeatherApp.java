@@ -23,31 +23,67 @@ public class WeatherApp {
     public static void main(String[] args) throws APIException {
         // TODO code application logic here
         Scanner wLoc = new Scanner(System.in);
-        
-        // declaring object of "OWM" class
-        OWM owm = new OWM("fba9f12b592bc739ef460d7125353aa1");
-
-        // getting current weather data for the "London" city
-        System.out.print("Input Location: ");
-        String cityLoc = wLoc.nextLine();
-        CurrentWeather cwd = owm.currentWeatherByCityName(cityLoc);
-        System.out.println("");
-        // checking data retrieval was successful or not
-        if (cwd.hasRespCode() && cwd.getRespCode() == 200) {
-        
-            // checking if city name is available
-            if (cwd.hasCityName()) {
-                //printing city name from the retrieved data
-                System.out.println("City: " + cwd.getCityName());
-            }
-            
-            // checking if max. temp. and min. temp. is available
-            if (cwd.hasMainData() && cwd.getMainData().hasTempMax() && cwd.getMainData().hasTempMin()) {
-                // printing the max./min. temperature
-                System.out.println("Temperature: " + cwd.getMainData().getTempMax()
-                            + "/" + cwd.getMainData().getTempMin() + "\'K");
-            }
-        }
-    }
+                
+            // declaring object of "OWM" class
+            OWM owm = new OWM("fba9f12b592bc739ef460d7125353aa1");
     
+            // getting current weather data from the inputed city
+            //City or State first then Country. Seperate with a comma.
+            System.out.print("Input Location: ");
+            String cityLoc = wLoc.nextLine();
+            CurrentWeather cwd = owm.currentWeatherByCityName(cityLoc);
+            System.out.println("");
+    
+            //printing city name from the retrieved data
+            System.out.println("City: " + cwd.getCityName());
+            
+            //The (.has) method checks if it exist. If the requested values exist, It displays true else false.
+            try{
+            System.out.println("Latitude: " + cwd.getCoordData().hasLatitude() + " " + cwd.getCoordData().getLatitude());
+            System.out.println("Longitude: " + cwd.getCoordData().hasLongitude() + " " + cwd.getCoordData().getLatitude());
+            System.out.println("");
+            
+            System.out.println("Weather ID: " + cwd.getWeatherList().get(0).getConditionId());
+            System.out.println("Weather Info: " + cwd.getWeatherList().get(0).getMainInfo());
+            System.out.println("Weather Detailed Info: " + cwd.getWeatherList().get(0).getMoreInfo());
+            System.out.println("Weather Icon Code: " + cwd.getWeatherList().get(0).getIconCode());
+            System.out.println("Weather Icon Link: " + cwd.getWeatherList().get(0).getIconLink());
+            System.out.println("");
+            
+            double cTemp =  Math.round(cwd.getMainData().getTemp() - 273.15);
+            double fTemp =  Math.round((cwd.getMainData().getTemp() - 273.15)*9/5+32);
+            System.out.println("Main Temperature: " + cTemp + "'C");
+            System.out.println("Main Temperature: " + fTemp + "'F");
+            System.out.println("Main Temperature Max: " + cwd.getMainData().getTempMax());
+            System.out.println("Main Temperature Min: " + cwd.getMainData().getTempMin());
+            System.out.println("Main Humidity: " + cwd.getMainData().getHumidity() + "%");
+            System.out.println("Main Pressure: " + cwd.getMainData().getPressure() + " hPa");
+            System.out.println("");
+            
+            System.out.println("Wind Speed: " + cwd.getWindData().getSpeed() + " mps");
+            System.out.println("Wind Gust: " + cwd.getWindData().getGust() + " m");
+            System.out.println("Wind Degree: " + cwd.getWindData().getDegree() + "'");
+            System.out.println("");
+            
+            System.out.println("Cloud: " + cwd.getCloudData().getCloudiness() + "%");
+            System.out.println("");
+            
+            System.out.println("Date and Time: " + cwd.getDateTime());
+            System.out.println("");
+            
+            System.out.println("System ID: " + cwd.getSystemData().getId());
+            System.out.println("System Type: " + cwd.getSystemData().getType());
+            System.out.println("System Country Code: " + cwd.getSystemData().getCountryCode()); //part 2
+            System.out.println("System Sunrise Date and Time: " + cwd.getSystemData().getSunriseDateTime());
+            System.out.println("System Sunset Date and Time: " + cwd.getSystemData().getSunsetDateTime());
+            System.out.println("");
+            
+            System.out.println("Resp Code: " + cwd.getRespCode()); //Understand
+            System.out.println("City ID: " + cwd.getCityId());
+            System.out.println("City Name: " + cwd.getCityName());
+            System.out.println("Base Station: " + cwd.getBaseStation());
+            }catch(Exception e){
+                System.out.println(e);
+            }            
+    }
 }
