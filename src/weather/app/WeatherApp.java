@@ -14,6 +14,8 @@ import java.util.Scanner;
 import net.aksingh.owmjapis.core.OWM;
 import net.aksingh.owmjapis.api.APIException;
 import net.aksingh.owmjapis.model.CurrentWeather;
+//import net.aksingh.owmjapis.model.DailyWeatherForecast;
+//import net.aksingh.owmjapis.model.HourlyWeatherForecast;
 public class WeatherApp {
 
     /**
@@ -26,17 +28,23 @@ public class WeatherApp {
                 
             // declaring object of "OWM" class
             OWM owm = new OWM("fba9f12b592bc739ef460d7125353aa1");
-    
+            owm.setAccuracy(OWM.Accuracy.ACCURATE); //Accuracy readings.
+            owm.setLanguage(OWM.Language.ENGLISH); //To change language. 
+            owm.setUnit(OWM.Unit.METRIC); //To Manipulate the Units... Readings unit will be altered. You change.
+            
             // getting current weather data from the inputed city
             //City or State first then Country. Seperate with a comma.
             System.out.print("Input Location: ");
             String cityLoc = wLoc.nextLine();
             CurrentWeather cwd = owm.currentWeatherByCityName(cityLoc);
+//            DailyWeatherForecast dwf = owm.dailyWeatherForecastByCityName(cityLoc);
+//            HourlyWeatherForecast hwf = owm.hourlyWeatherForecastByCityName(cityLoc);
             System.out.println("");
     
             //printing city name from the retrieved data
             System.out.println("City: " + cwd.getCityName());
             
+            //for Current Weather.
             //The (.has) method checks if it exist. If the requested values exist, It displays true else false.
             try{
             System.out.println("Latitude: " + cwd.getCoordData().hasLatitude() + " " + cwd.getCoordData().getLatitude());
@@ -50,12 +58,13 @@ public class WeatherApp {
             System.out.println("Weather Icon Link: " + cwd.getWeatherList().get(0).getIconLink());
             System.out.println("");
             
-            double cTemp =  Math.round(cwd.getMainData().getTemp() - 273.15);
-            double fTemp =  Math.round((cwd.getMainData().getTemp() - 273.15)*9/5+32);
-            System.out.println("Main Temperature: " + cTemp + "'C");
-            System.out.println("Main Temperature: " + fTemp + "'F");
-            System.out.println("Main Temperature Max: " + cwd.getMainData().getTempMax());
-            System.out.println("Main Temperature Min: " + cwd.getMainData().getTempMin());
+//            double cTemp =  Math.round(cwd.getMainData().getTemp() - 273.15);
+//            double fTemp =  Math.round((cwd.getMainData().getTemp() - 273.15)*9/5+32);
+//            System.out.println("Main Temperature: " + cTemp + "'C");
+//            System.out.println("Main Temperature: " + fTemp + "'F");
+            System.out.println("Main Temperature: " + cwd.getMainData().getTemp() + "'C");
+            System.out.println("Main Temperature Max: " + cwd.getMainData().getTempMax() + "'C");
+            System.out.println("Main Temperature Min: " + cwd.getMainData().getTempMin() + "'C");
             System.out.println("Main Humidity: " + cwd.getMainData().getHumidity() + "%");
             System.out.println("Main Pressure: " + cwd.getMainData().getPressure() + " hPa");
             System.out.println("");
