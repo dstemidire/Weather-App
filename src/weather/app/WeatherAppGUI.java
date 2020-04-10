@@ -7,6 +7,8 @@ package weather.app;
 
 
 import java.awt.Toolkit;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,11 +25,11 @@ public class WeatherAppGUI extends javax.swing.JFrame {
     /**
      * Creates new form WeatherAppGUI
      */
-    static String inpLoc, cityName, cityCountryCode, wInfo, wDetailedInfo;
-    static double tempC, tempF, windSp, windDg, windGs;
-    static Date cityDate;
-    static Integer cityCloud;
-    int teC;
+    static String inpLoc, cityName, cityCountryCode, wInfo, wDetailedInfo, cdate;
+    static double tempC, tempF;
+    static Double windSp, windDg, windGs, cityLat, cityLon, cityPre;
+    static Date a;
+    static Integer cityCloud, cityHum, cityDateD, cityDateM, cityDateH, cityDateMi, sSetH, sSetM, sRiseH, sRiseM;
 
     public WeatherAppGUI() {
         initComponents();
@@ -194,8 +196,9 @@ public class WeatherAppGUI extends javax.swing.JFrame {
 
         jLabel12.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 10)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel12.setText("##");
-        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 380, -1, -1));
+        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 380, -1, -1));
 
         jLabel10.setFont(new java.awt.Font("Vollkorn", 0, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
@@ -209,7 +212,7 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("Montserrat", 0, 10)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("##");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 230, -1, -1));
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 230, -1, -1));
 
         jLabel7.setFont(new java.awt.Font("Montserrat", 0, 10)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
@@ -276,23 +279,36 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         } catch (APIException ex) {
             Logger.getLogger(WeatherAppGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-         
+        
         //Parsing all data into Labels.
-        String a,b,c,d,e;
-         
+        String i, j, k, l, m, n, o;
+        
+        i = cityLat.toString();
+        j = cityLon.toString();
+        k = cityHum.toString();
+        
+        try{
         jLabel4.setText(tempC + "'C");
         jLabel5.setText(wInfo);
         jLabel7.setText(cityName + ", " + cityCountryCode + ".");
-//        a = cityDate.toString();
-//        jLabel8.setText(a);
+        jLabel8.setText(cdate); //Not gettng date from weather API. getting system date.
         jLabel10.setText(tempF + "'F");
         jLabel12.setText(wDetailedInfo);
-        b = cityCloud.toString();
-        jLabel14.setText(b + "%");
+        jLabel14.setText(cityCloud + "%");
+        jLabel15.setText(windSp + " mps");
+        jLabel16.setText(windDg + " m");
+        jLabel17.setText(windGs + "'");
+        jLabel19.setText(i);
+        jLabel21.setText(j);
+        jLabel23.setText(k + "'");
+        jLabel25.setText(cityPre + " hPa");
+        jLabel27.setText(sSetH + ":" + sSetM);
+        jLabel29.setText(sRiseH + ":" + sRiseM);
+        }catch(Exception ex){
+            System.out.println("Me at label: " + ex);
+        }
         
-//        jLabel15.setText(windSp);
-//        jLabel16.setText(windDg);
-//        jLabel17.setText(windGs);
+        fixMusic_Quote();
     }//GEN-LAST:event_jLabel3MouseReleased
 
     /**
@@ -383,15 +399,64 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         wInfo = cwd.getWeatherList().get(0).getMainInfo();
         cityName = cwd.getCityName();
         cityCountryCode = cwd.getSystemData().getCountryCode();
-        cityDate = cwd.getDateTime();
+        cityDateD = cwd.getDateTime().getDay();
+        cityDateM = cwd.getDateTime().getMonth();
+        cityDateH = cwd.getDateTime().getHours();
+        cityDateMi = cwd.getDateTime().getMinutes();
         tempF = Math.round((tempC * 9/5) + 32);
         wDetailedInfo = cwd.getWeatherList().get(0).getMoreInfo();
         cityCloud = cwd.getCloudData().getCloudiness();
         windSp = cwd.getWindData().getSpeed();
         windDg = cwd.getWindData().getDegree();
         windGs = cwd.getWindData().getGust();
+        
+        cityLat = cwd.getCoordData().getLatitude();
+        cityLon = cwd.getCoordData().getLatitude();
+        cityHum = cwd.getMainData().getHumidity();
+        cityPre = cwd.getMainData().getPressure();
+        sSetH = cwd.getSystemData().getSunriseDateTime().getHours();
+        sSetM =cwd.getSystemData().getSunriseDateTime().getMinutes();
+        sRiseH = cwd.getSystemData().getSunsetDateTime().getHours();
+        sRiseM = cwd.getSystemData().getSunsetDateTime().getMinutes();
         }catch(Exception e){
-            System.out.println(e);
+            System.out.println("Me at weatherinfo: " + e);
+        }
+        
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+        LocalDateTime now = LocalDateTime.now();  
+        cdate = dtf.format(now);
+    }
+
+    private void fixMusic_Quote() {
+        if(wDetailedInfo.equalsIgnoreCase("Clear Sky")){
+            jLabel30.setText("");
+            jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\clear sky.png"));
+        }else if(wDetailedInfo.equalsIgnoreCase("Few Clouds")){
+            jLabel30.setText("");
+            jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\cloud.png"));
+        }else if(wDetailedInfo.equalsIgnoreCase("Scattered Clouds")){
+            jLabel30.setText("");
+            jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\cloud.png"));
+        }else if(wDetailedInfo.equalsIgnoreCase("Overcast Clouds") || wDetailedInfo.equalsIgnoreCase("Broken Clouds")){
+            jLabel30.setText("");
+            jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\cloud.png"));
+        }else if(wDetailedInfo.equalsIgnoreCase("Shower Rain")){
+            jLabel30.setText("");
+            jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\rain.png"));
+        }else if(wDetailedInfo.equalsIgnoreCase("Rain")){
+            jLabel30.setText("");
+            jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\rain.png"));
+        }else if(wDetailedInfo.equalsIgnoreCase("Thunder Storm")){
+            jLabel30.setText("");
+            jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\thunder storm.png"));
+        }else if(wDetailedInfo.equalsIgnoreCase("Snow")){
+            jLabel30.setText("");
+            jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\snow.png"));
+        }else if(wDetailedInfo.equalsIgnoreCase("Mist") || wDetailedInfo.equalsIgnoreCase("Haze")){
+            jLabel30.setText("");
+            jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\mist.png"));
+        }else{
+            
         }
     }
 }

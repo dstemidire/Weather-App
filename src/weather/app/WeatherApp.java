@@ -88,12 +88,13 @@ public class WeatherApp {
             System.out.println("Date and Time TIME: " + cwd.getDateTime().getTime());
             System.out.println("Date and Time TIMEZONE: " + cwd.getDateTime().getTimezoneOffset());
             System.out.println("Date and Time YEAH: " + cwd.getDateTime().getYear());
+            System.out.println("Date and Time: " + cwd.getDateTime().getHours() + ":" + cwd.getDateTime().getMinutes());
             System.out.println("");
             
             System.out.println("System ID: " + cwd.getSystemData().getId());
             System.out.println("System Type: " + cwd.getSystemData().getType());
             System.out.println("System Country Code: " + cwd.getSystemData().getCountryCode()); //part 2
-            System.out.println("System Sunrise Date and Time: " + cwd.getSystemData().getSunriseDateTime());
+            System.out.println("System Sunrise Date and Time: " + cwd.getSystemData().getSunriseDateTime().getHours() + ":" + cwd.getSystemData().getSunriseDateTime().getMinutes());
             System.out.println("System Sunset Date and Time: " + cwd.getSystemData().getSunsetDateTime());
             System.out.println("");
             
