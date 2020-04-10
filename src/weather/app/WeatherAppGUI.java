@@ -7,15 +7,19 @@ package weather.app;
 
 
 import java.awt.Toolkit;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import net.aksingh.owmjapis.api.APIException;
 import net.aksingh.owmjapis.core.OWM;
 import net.aksingh.owmjapis.model.CurrentWeather;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 /**
  *
  * @author Ibro Yusuf Ola
@@ -25,6 +29,7 @@ public class WeatherAppGUI extends javax.swing.JFrame {
     /**
      * Creates new form WeatherAppGUI
      */
+    static AudioStream audio;
     static String inpLoc, cityName, cityCountryCode, wInfo, wDetailedInfo, cdate;
     static double tempC, tempF;
     static Double windSp, windDg, windGs, cityLat, cityLon, cityPre;
@@ -51,6 +56,7 @@ public class WeatherAppGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jLabel32 = new javax.swing.JLabel();
         jLabel31 = new javax.swing.JLabel();
         jLabel30 = new javax.swing.JLabel();
         jLabel28 = new javax.swing.JLabel();
@@ -91,6 +97,15 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         getContentPane().setLayout(new java.awt.CardLayout());
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/mute/audio.png"))); // NOI18N
+        jLabel32.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel32.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel32MouseClicked(evt);
+            }
+        });
+        jPanel1.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 20, 20, 20));
 
         jLabel31.setFont(new java.awt.Font("Vollkorn", 0, 10)); // NOI18N
         jLabel31.setForeground(new java.awt.Color(255, 0, 0));
@@ -198,7 +213,7 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         jLabel12.setForeground(new java.awt.Color(255, 255, 255));
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel12.setText("##");
-        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 380, -1, -1));
+        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 380, 90, -1));
 
         jLabel10.setFont(new java.awt.Font("Vollkorn", 0, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
@@ -268,11 +283,13 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         jLabel3.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\icon\\refresh_e.png"));
         inpLoc = jTextField1.getText();
+        AudioPlayer.player.stop(audio);
     }//GEN-LAST:event_jLabel3MousePressed
 
     private void jLabel3MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseReleased
         // TODO add your handling code here:
         jLabel3.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\icon\\refresh_b.png"));
+        jLabel32.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\mute\\audio.png"));
         jLabel31.setVisible(false);
          try {
             getWeatherInfo();
@@ -310,6 +327,12 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         
         fixMusic_Quote();
     }//GEN-LAST:event_jLabel3MouseReleased
+
+    private void jLabel32MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel32MouseClicked
+        // TODO add your handling code here:
+        jLabel32.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\mute\\mute.png"));
+        AudioPlayer.player.stop(audio);
+    }//GEN-LAST:event_jLabel32MouseClicked
 
     /**
      * @param args the command line arguments
@@ -372,6 +395,7 @@ public class WeatherAppGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -422,41 +446,70 @@ public class WeatherAppGUI extends javax.swing.JFrame {
             System.out.println("Me at weatherinfo: " + e);
         }
         
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-        LocalDateTime now = LocalDateTime.now();  
-        cdate = dtf.format(now);
+        cdate = java.time.LocalDate.now().toString();
     }
 
     private void fixMusic_Quote() {
-        if(wDetailedInfo.equalsIgnoreCase("Clear Sky")){
-            jLabel30.setText("");
+        if(wDetailedInfo.equalsIgnoreCase("Clear Sky") || wInfo.equalsIgnoreCase("Clear")){
+            jLabel30.setText("<html> <div> <p> People are just trying to work their jobs, raise their families,<br/> discipline their kids, and have a good life...<br/> Politics has just become like bad weather. And they deserve clear skies.<br/> <strong>By Eddie Vedder.<strong> </p> </div> </html>");
+            playMusic("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\music\\music3.wav");
             jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\clear sky.png"));
-        }else if(wDetailedInfo.equalsIgnoreCase("Few Clouds")){
-            jLabel30.setText("");
+        }
+        else if(wDetailedInfo.equalsIgnoreCase("Few Clouds")){
+            jLabel30.setText("<html> <div> <p> If you use your imagination,<br/> you can see lots of things in the cloud formations.<br/> <strong>By Charles M. Schulz.<strong> </p> </div> </html>");
+            playMusic("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\music\\music2.wav");
             jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\cloud.png"));
-        }else if(wDetailedInfo.equalsIgnoreCase("Scattered Clouds")){
-            jLabel30.setText("");
+        }
+        else if(wDetailedInfo.equalsIgnoreCase("Scattered Clouds")){
+            jLabel30.setText("<html> <div> <p> I know that I shall meet my fate somewhere among the clouds above;<br/> those that I fight I do not hate, those that I guard I do not love.<br/> <strong>By W.B. Yeats.<strong> </p> </div> </html>");
+            playMusic("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\music\\music2.wav");
             jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\cloud.png"));
-        }else if(wDetailedInfo.equalsIgnoreCase("Overcast Clouds") || wDetailedInfo.equalsIgnoreCase("Broken Clouds")){
-            jLabel30.setText("");
+        }
+        else if(wDetailedInfo.equalsIgnoreCase("Overcast Clouds") || wDetailedInfo.equalsIgnoreCase("Broken Clouds")){
+            jLabel30.setText("<html> <div> <p> We all have bad days, but one thing is true;<br/> no cloud is so dark that the sun can't shine through.<br/> <strong>By Unknown.<strong> </p> </div> </html>");
+            playMusic("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\music\\music2.wav");
             jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\cloud.png"));
-        }else if(wDetailedInfo.equalsIgnoreCase("Shower Rain")){
-            jLabel30.setText("");
+        }
+        else if(wDetailedInfo.equalsIgnoreCase("Shower Rain")){
+            jLabel30.setText("<html> <div> <p> He was so benevolent, so merciful a man that, in his mistaken passion,<br/> he would have held an umbrella over a duck in a shower of rain.<br/> <strong>By Douglas William Jerrold.<strong> </p> </div> </html>");
+            playMusic("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\music\\music2.wav");
             jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\rain.png"));
-        }else if(wDetailedInfo.equalsIgnoreCase("Rain")){
-            jLabel30.setText("");
+        }
+        else if(wDetailedInfo.equalsIgnoreCase("Rain") || wInfo.equalsIgnoreCase("Rain")){
+            jLabel30.setText("<html> <div> <p> There is more to sex appeal than just measurements.<br/> I don't need a bedroom to prove my womanliness.<br/> I can convey just as much sex appeal, picking apples off a tree or standing in the rain.<br/> <strong>By Audrey Hepburn.<strong> </p> </div> </html>");
+            playMusic("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\music\\music2.wav");
             jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\rain.png"));
-        }else if(wDetailedInfo.equalsIgnoreCase("Thunder Storm")){
-            jLabel30.setText("");
+        }
+        else if(wDetailedInfo.equalsIgnoreCase("Thunder Storm") || wInfo.equalsIgnoreCase("Thunder Storm")){
+            jLabel30.setText("<html> <div> <p> Times of great calamity and confusion have been productive for the greatest minds.<br/> The purest ore is produced from the hottest furnace.<br/> The brightest thunder-bolt is elicited from the darkest storm.<br/> <strong>By Charles Caleb Colton.<strong> </p> </div> </html>");
+            playMusic("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\music\\music2.wav");
             jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\thunder storm.png"));
-        }else if(wDetailedInfo.equalsIgnoreCase("Snow")){
-            jLabel30.setText("");
+        }
+        else if(wDetailedInfo.equalsIgnoreCase("Snow") || wInfo.equalsIgnoreCase("Snow")){
+            jLabel30.setText("<html> <div> <p> Hold fast to dreams For when dreams go Life is a barren field Frozen with snow.<br/> <strong>By Langston Hughes.<strong> </p> </div> </html>");
+            playMusic("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\music\\music1.wav");
             jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\snow.png"));
-        }else if(wDetailedInfo.equalsIgnoreCase("Mist") || wDetailedInfo.equalsIgnoreCase("Haze")){
-            jLabel30.setText("");
+        }
+        else if(wDetailedInfo.equalsIgnoreCase("Mist") || wInfo.equalsIgnoreCase("Haze") || wInfo.equalsIgnoreCase("Mist")){
+            jLabel30.setText("<html> <div> <p> Avoid being in the Mist. Because you could get unseen by the successful ones.<br/> <strong>By Dark Saint ♣️.<strong> </p> </div> </html>");
+            playMusic("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\music\\music1.wav");
             jLabel2.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\weather icon\\mist.png"));
-        }else{
-            
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Error Displaying Icon or Quote :(");
+        }
+    }
+    
+    public static void playMusic(String filepath) {
+        InputStream music;
+        
+        try{
+            music = new FileInputStream(new File(filepath));  
+            audio = new AudioStream(music);
+            AudioPlayer.player.start(audio);
+//            AudioPlayer.player.stop(audio); //To stop music.            
+        }catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error playing music :(");
         }
     }
 }
