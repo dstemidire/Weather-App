@@ -21,6 +21,8 @@ public class WeatherApp {
     /**
      * @param args the command line arguments
      * @throws net.aksingh.owmjapis.api.APIException
+     * 
+     * Work on the setLanguage and setAccuracy and the commented imports.
      */
     public static void main(String[] args) throws APIException {
         // TODO code application logic here
@@ -77,7 +79,15 @@ public class WeatherApp {
             System.out.println("Cloud: " + cwd.getCloudData().getCloudiness() + "%");
             System.out.println("");
             
-            System.out.println("Date and Time: " + cwd.getDateTime());
+            System.out.println("Date and Time DATE: " + cwd.getDateTime().getDate());
+            System.out.println("Date and Time DAY: " + cwd.getDateTime().getDay());
+            System.out.println("Date and Time HOURS: " + cwd.getDateTime().getHours());
+            System.out.println("Date and Time MINUTES: " + cwd.getDateTime().getMinutes());
+            System.out.println("Date and Time MONTH: " + cwd.getDateTime().getMonth());
+            System.out.println("Date and Time SECONDS: " + cwd.getDateTime().getSeconds());
+            System.out.println("Date and Time TIME: " + cwd.getDateTime().getTime());
+            System.out.println("Date and Time TIMEZONE: " + cwd.getDateTime().getTimezoneOffset());
+            System.out.println("Date and Time YEAH: " + cwd.getDateTime().getYear());
             System.out.println("");
             
             System.out.println("System ID: " + cwd.getSystemData().getId());
