@@ -38,6 +38,7 @@ public class WeatherAppGUI extends javax.swing.JFrame {
 
     public WeatherAppGUI() {
         initComponents();
+        jLabel31.setVisible(false);
         this.setLocationRelativeTo(null);
         this.setSize(632,432);
         this.setResizable(false);        
@@ -56,6 +57,8 @@ public class WeatherAppGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        fake = new javax.swing.JTextField();
+        orig = new javax.swing.JTextField();
         jLabel32 = new javax.swing.JLabel();
         jLabel31 = new javax.swing.JLabel();
         jLabel30 = new javax.swing.JLabel();
@@ -83,7 +86,6 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -97,6 +99,25 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         getContentPane().setLayout(new java.awt.CardLayout());
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        fake.setBackground(new java.awt.Color(94, 107, 140));
+        fake.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        fake.setText("INPUT LOCATION");
+        fake.setBorder(null);
+        fake.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        fake.setDisabledTextColor(new java.awt.Color(102, 102, 102));
+        fake.setEnabled(false);
+        jPanel1.add(fake, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, 190, 20));
+
+        orig.setBackground(new java.awt.Color(94, 107, 140));
+        orig.setForeground(new java.awt.Color(255, 255, 255));
+        orig.setBorder(null);
+        orig.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                origKeyTyped(evt);
+            }
+        });
+        jPanel1.add(orig, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, 190, 20));
 
         jLabel32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/mute/audio.png"))); // NOI18N
         jLabel32.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -238,12 +259,6 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icon/locate.png"))); // NOI18N
         jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, 20, 30));
 
-        jTextField1.setBackground(new java.awt.Color(94, 107, 140));
-        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField1.setBorder(null);
-        jTextField1.setOpaque(false);
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, 190, 20));
-
         jLabel5.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 13)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("##");
@@ -282,7 +297,7 @@ public class WeatherAppGUI extends javax.swing.JFrame {
     private void jLabel3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MousePressed
         // TODO add your handling code here:
         jLabel3.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\icon\\refresh_e.png"));
-        inpLoc = jTextField1.getText();
+        inpLoc = orig.getText();
         AudioPlayer.player.stop(audio);
     }//GEN-LAST:event_jLabel3MousePressed
 
@@ -290,7 +305,7 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         jLabel3.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\icon\\refresh_b.png"));
         jLabel32.setIcon(new ImageIcon("C:\\Users\\Ibro Yusuf Ola\\Documents\\NetBeansProjects\\Weather App\\src\\icons\\mute\\audio.png"));
-        jLabel31.setVisible(false);
+//        jLabel31.setVisible(false);
          try {
             getWeatherInfo();
         } catch (APIException ex) {
@@ -334,6 +349,19 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         AudioPlayer.player.stop(audio);
     }//GEN-LAST:event_jLabel32MouseClicked
 
+    private void origKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_origKeyTyped
+        // TODO add your handling code here:
+        if("".equals(orig.getText())){
+            fake.setVisible(true);
+            fake.setEnabled(false);
+            jLabel31.setVisible(false);
+        }else{
+            fake.setVisible(false);
+            fake.setEnabled(false);
+            jLabel31.setVisible(true);
+        }
+    }//GEN-LAST:event_origKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -364,12 +392,20 @@ public class WeatherAppGUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                
+                try {
+                    Thread.sleep(3000);
+                } catch (Exception e) {
+
+                }
+                
                 new WeatherAppGUI().setVisible(true);
             }
         });
 }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField fake;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -403,7 +439,7 @@ public class WeatherAppGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField orig;
     // End of variables declaration//GEN-END:variables
 
     private void appIcon() {
